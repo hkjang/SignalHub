@@ -208,7 +208,7 @@ body {
 
 /* ----- Form ----- */
 .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-input[type=text], input[type=number], select {
+input[type=text], input[type=number], input[type=email], input[type=password], input[type=url], input[type=search], input[type=tel], select {
   padding: 8px 12px;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
@@ -219,7 +219,7 @@ input[type=text], input[type=number], select {
   flex: 1;
   min-width: 180px;
 }
-input[type=text]:focus, input[type=number]:focus, select:focus {
+input[type=text]:focus, input[type=number]:focus, input[type=email]:focus, input[type=password]:focus, input[type=url]:focus, input[type=search]:focus, input[type=tel]:focus, select:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
@@ -239,7 +239,7 @@ input[type=text]:focus, input[type=number]:focus, select:focus {
   gap: 4px;
 }
 .form-grid label.full { grid-column: 1 / -1; }
-.form-grid input { font-size: 13px; min-width: 0; }
+.form-grid input, .form-grid select { font-size: 13px; min-width: 0; width: 100%; box-sizing: border-box; }
 
 /* ----- Table ----- */
 .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }

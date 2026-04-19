@@ -109,18 +109,40 @@ const TAB_META = {
   settings:  { title: '설정',      sub: '런타임 구성 편집 — 저장 시 즉시 반영' },
 };
 
-function activateTab(name) {
+const TAB_STORAGE_KEY = 'signalhub.activeTab';
+
+function activateTab(name, { push = true } = {}) {
+  if (!TAB_META[name]) name = 'dashboard';
   $$('.sidebar nav a').forEach((a) => a.classList.toggle('active', a.dataset.tab === name));
   $$('.tab').forEach((s) => s.classList.toggle('hidden', s.dataset.tab !== name));
   const meta = TAB_META[name] || {};
   $('#page-title').textContent = meta.title || '';
   $('#page-sub').textContent = meta.sub || '';
+  try { localStorage.setItem(TAB_STORAGE_KEY, name); } catch {}
+  if (push && location.hash !== '#' + name) {
+    history.replaceState(null, '', '#' + name);
+  }
   if (name === 'dashboard') loadDashboard();
   if (name === 'keywords') loadKeywords();
   if (name === 'insights') loadInsights();
   if (name === 'results') { loadKeywordFilterOptions(); loadResults(); }
   if (name === 'settings') loadSettings();
 }
+
+function initialTab() {
+  const fromHash = (location.hash || '').replace(/^#/, '');
+  if (fromHash && TAB_META[fromHash]) return fromHash;
+  try {
+    const saved = localStorage.getItem(TAB_STORAGE_KEY);
+    if (saved && TAB_META[saved]) return saved;
+  } catch {}
+  return 'dashboard';
+}
+
+window.addEventListener('hashchange', () => {
+  const name = (location.hash || '').replace(/^#/, '');
+  if (name && TAB_META[name]) activateTab(name, { push: false });
+});
 
 $$('.sidebar nav a').forEach((a) =>
   a.addEventListener('click', (e) => { e.preventDefault(); activateTab(a.dataset.tab); })
@@ -873,5 +895,5 @@ $('#quick-run-btn').addEventListener('click', async () => {
 
 /* ============== Boot ============== */
 pingHealth();
-activateTab('dashboard');
+activateTab(initialTab());
 setInterval(pingHealth, 30000);

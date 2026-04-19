@@ -1,0 +1,17 @@
+services:
+  signalhub:
+    build: .
+    image: signalhub:latest
+    container_name: signalhub
+    restart: unless-stopped
+    ports:
+      - "8765:8765"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - TZ=Asia/Seoul
+      - DB_PATH=/app/data/analysis.db
+      # To reach a host-side Ollama/vLLM, configure via the in-app Settings tab
+      # and use http://host.docker.internal:11434/v1 as the base URL.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
